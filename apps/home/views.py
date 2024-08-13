@@ -36,7 +36,8 @@ class QuestionsView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def delete(self, request, pk):
-        pass
+        Questions.objects.filter(pk=pk).delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
     def put(self, request, pk):
         question = Questions.objects.get(pk=pk)
