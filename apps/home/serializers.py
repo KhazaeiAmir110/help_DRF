@@ -10,9 +10,15 @@ class PersonSerializer(serializers.ModelSerializer):
 
 
 class QuestionsSerializer(serializers.ModelSerializer):
+    answers = serializers.SerializerMethodField()
+
     class Meta:
         model = Questions
         fields = '__all__'
+
+    def get_answers(self, obj):
+        result = obj.answers.all()
+        return AnswersSerializer(instance=result, many=True).data
 
 
 class AnswersSerializer(serializers.ModelSerializer):
