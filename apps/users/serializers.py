@@ -31,3 +31,9 @@ class UserRegisterSerializer(serializers.ModelSerializer):
                 'validators': [validate_email]
             }
         }
+
+
+class ListUserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = '__all__'

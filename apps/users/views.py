@@ -1,10 +1,10 @@
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import IsAdminUser
 from rest_framework.views import APIView
 from rest_framework.response import Response
 
 from django.contrib.auth.models import User
 
-from .serializers import UserRegisterSerializer
+from .serializers import UserRegisterSerializer, ListUserSerializer
 
 
 class UserRegisterView(APIView):
@@ -18,3 +18,12 @@ class UserRegisterView(APIView):
             )
             return Response(serializer.data)
         return Response(serializer.errors)
+
+
+class ListUserView(APIView):
+    permission_classes = [IsAdminUser]
+
+    def get(self, request):
+        users = User.objects.all()
+        serializer = ListUserSerializer(instance=users, many=True)
+        return Response(data=serializer.data)
