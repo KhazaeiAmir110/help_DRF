@@ -1,6 +1,7 @@
 from rest_framework import status
-from rest_framework.views import APIView
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
+from rest_framework.views import APIView
 
 from .models import Person, Questions
 from .serializers import PersonSerializer, QuestionsSerializer
@@ -23,6 +24,12 @@ class PersonView(APIView):
 
 
 class QuestionsView(APIView):
+    permission_classes = [AllowAny]
+
+    def get_permissions(self):
+        if self.request.method == 'GET':
+            return [IsAuthenticated()]
+
     def get(self, request):
         questions = Questions.objects.all()
         serializer = QuestionsSerializer(instance=questions, many=True).data
