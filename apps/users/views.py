@@ -8,6 +8,10 @@ from .serializers import UserRegisterSerializer, ListUserSerializer
 
 
 class UserRegisterView(APIView):
+    """
+        view to register new user
+    """
+    serializer_class = UserRegisterSerializer
     def post(self, request):
         serializer = UserRegisterSerializer(data=request.POST)
         if serializer.is_valid():
@@ -21,6 +25,10 @@ class UserRegisterView(APIView):
 
 
 class ListUserView(APIView):
+    """
+        view to list users
+    """
+    serializer_class = ListUserSerializer
     permission_classes = [IsAdminUser]
 
     def get(self, request):

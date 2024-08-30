@@ -9,6 +9,9 @@ from apps.core.permissions import IsOwnerOrReadOnly
 
 
 class HomeView(APIView):
+    """
+        View to render home page
+    """
     def get(self, request):
         return Response({'message': 'Hello World!'})
 
@@ -18,6 +21,11 @@ class HomeView(APIView):
 
 
 class PersonView(APIView):
+    """
+        View to render person page
+    """
+    serializer_class = PersonSerializer
+
     def get(self, request):
         person = Person.objects.all()
         serializer = PersonSerializer(instance=person, many=True)
@@ -25,6 +33,10 @@ class PersonView(APIView):
 
 
 class QuestionsView(APIView):
+    """
+        view to render questions page
+    """
+    serializer_class = QuestionsSerializer
     permission_classes = []
 
     def get_permissions(self):
