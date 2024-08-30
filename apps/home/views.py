@@ -1,10 +1,11 @@
 from rest_framework import status
-from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework.permissions import AllowAny, IsAuthenticated, IsAdminUser
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from .models import Person, Questions
 from .serializers import PersonSerializer, QuestionsSerializer
+from apps.core.permissions import IsOwnerOrReadOnly
 
 
 class HomeView(APIView):
@@ -24,11 +25,15 @@ class PersonView(APIView):
 
 
 class QuestionsView(APIView):
-    permission_classes = [AllowAny]
+    permission_classes = []
 
     def get_permissions(self):
         if self.request.method == 'GET':
+            return [AllowAny()]
+        elif self.request.method == 'POST':
             return [IsAuthenticated()]
+        elif self.request.method == 'PUT' or self.request.method == 'DELETE':
+            return [IsOwnerOrReadOnly()]
 
     def get(self, request):
         questions = Questions.objects.all()
@@ -48,8 +53,9 @@ class QuestionsView(APIView):
 
     def put(self, request, pk):
         question = Questions.objects.get(pk=pk)
+        self.check_object_permissions(request, question)
         serializer = QuestionsSerializer(instance=question, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
-            return Response(serializer, status=status.HTTP_200_OK)
+            return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
